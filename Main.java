@@ -8,6 +8,12 @@ public class Main
         newAVL.insert(15);
         newAVL.insert(20);
         newAVL.levelOrder();
+
+        newAVL.delete(5);
+        System.out.println();
+        newAVL.levelOrder();
+        System.out.println();
+        newAVL.clearAVL();
     }
     
 }

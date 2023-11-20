@@ -11,6 +11,8 @@ public class AVL
         root = null; //when instance of AVL is created. We set root node to null
     }
 
+
+
     //Pre-Order Traversal
     public void preOrder(BinaryNode node)
     {
@@ -22,6 +24,8 @@ public class AVL
         preOrder(node.left); //check left sub-tree
         preOrder(node.right); //check right sub-tree
     }
+
+
 
     //In-Order Traversal
     public void inOrder(BinaryNode node)
@@ -35,6 +39,8 @@ public class AVL
         inOrder(node.right); //check right sub-tree
     }
 
+
+
     //Post-Order Traversal
     public void postOder(BinaryNode node)
     {
@@ -46,6 +52,8 @@ public class AVL
         postOder(node.right); //check right sub-tree
         System.out.print(node.value + " "); //print out value of node
     }
+
+
 
     //Level-Order Travesal - visits all nodes level by level. Unlike the other methods
     public void levelOrder()
@@ -66,6 +74,8 @@ public class AVL
             }
         }
     }
+
+
 
     //Search Method - looks for a specific value in the AVL tree, starting at a given node
     public BinaryNode search(BinaryNode node, int value)
@@ -90,6 +100,8 @@ public class AVL
         }
     }
 
+
+
     //Get Height - returns height of node
     public int getHeight(BinaryNode node)
     {
@@ -99,6 +111,8 @@ public class AVL
         }
         return node.height; //If the node is not null, return the height of the node
     }
+
+
 
     //Rotate Right O(1) - Do a right rotation on a disbalanced node to balance the tree
     private BinaryNode rotateRight(BinaryNode disbalancedNode)
@@ -111,6 +125,8 @@ public class AVL
         return newRoot; //return the root after roation
     }
 
+
+
     //Rotate Left O(1) - Do a left rotation on a disbalanced node
     private BinaryNode rotateLeft(BinaryNode disbalancedNode)
     {
@@ -122,6 +138,8 @@ public class AVL
         return newRoot; //return the root after rotation
     }
 
+
+
     //Get Balance O(1) - Figure out the tree balance
     public int getBalance(BinaryNode node)
     {
@@ -131,6 +149,8 @@ public class AVL
         }
         return getHeight(node.left) - getHeight(node.right); //If node is not null, calculate the balance or difference between left side and right
     }
+
+
 
     //Insert Node Method O(logN) - insert new node with a given value
     private BinaryNode insertNode(BinaryNode node, int nodeValue)
@@ -155,23 +175,23 @@ public class AVL
         int balance = getBalance(node); //get balance of the tree
 
         //Do the rotations below
-        if(balance > 1 && nodeValue < node.left.value)  //Left, Left method
+        if(balance > 1 && nodeValue < node.left.value)  //Left, Left condition
         {
             return rotateRight(node); //rotate right
         }
 
-        if(balance > 1 && nodeValue > node.left.value) //Left, Rigth method
+        if(balance > 1 && nodeValue > node.left.value) //Left, Rigth condition
         {
             node.left = rotateLeft(node.left); //rotate left
             return rotateRight(node); //rotate right
         }
 
-        if(balance < -1 && nodeValue > node.right.value) //Right, Right method
+        if(balance < -1 && nodeValue > node.right.value) //Right, Right condition
         {
             return rotateLeft(node); //rotate left
         }
 
-        if(balance < -1 && nodeValue < node.right.value) //Right, Left method
+        if(balance < -1 && nodeValue < node.right.value) //Right, Left condition
         {
             node.right = rotateRight(node.right); //rotate right
             return rotateLeft(node); //rotate left
@@ -179,13 +199,103 @@ public class AVL
         return node; //return the updated node
     }
 
+
+
     //Method used to insert a value into the AVL tree.
     public void insert(int value) 
     {
-        root = insertNode(root, value);
+        root = insertNode(root, value); //call the insertNode method to insert value
+    }
+
+
+    
+    //Minimum node finder 
+    public BinaryNode minimumNode(BinaryNode node)
+    {
+        if(node.left == null) //if there is no left child
+        {
+            return node; //return current node
+        }
+        return minimumNode(node.left); //if there is a left child, keep searching the left subtree for smallest value
     }
 
 
 
+    // Delete Node O(logN)
+    public BinaryNode deleteNode(BinaryNode node, int value)
+    {
+        if(node == null) //if node is null
+        {
+            System.out.println("Value not found in tree"); //value is not found in the tree
+            return node;
+        }
+        if(value < node.value) //search for and delete the value in the left subtree is value is less than the node value
+        {
+            node.left = deleteNode(node.left, value);
+        }
+        else if(value > node.value) //search for and delete the value in the right subtree if value is greater than the node value
+        {
+            node.right = deleteNode(node.right, value);
+        }
+        else 
+        {
+            if(node.left != null && node.right != null) //if the left child and right child are not null
+            {
+                BinaryNode tmp = node; //create tmp node
+                BinaryNode minNodeForRight = minimumNode(tmp.right); 
+                node.value = minNodeForRight.value; //replace current node's value with the value of the minimum node in the right sub-tree
+                node.right = deleteNode(node.right, minNodeForRight.value); //delete the minimum node in the right subtree
+            }
+            else if(node.left != null) //if node's left child is not null
+            {
+                node = node.left; //replace the current node with its left child
+            }
+            else if(node.right != null) //if node's right child is not null
+            {
+                node = node.right; //replace the current node with it's right child
+            }
+            else //if the node has no children
+            {
+                node = null; //remove the node
+            }
+        }
 
+        int balance = getBalance(node); //calculate the balance of node
+        if(balance > 1 && getBalance(node.left) >= 0) //LL Condition, Right rotation
+        {
+            return rotateRight(node);
+        }
+        if(balance > 1 && getBalance(node.left) < 0)  //LR Condition, Left rotation on left child and then right rotation on disbalanced node
+        {
+            node.left = rotateLeft(node.left); 
+            return rotateRight(node);
+        }
+        if(balance < -1 && getBalance(node.right) <= 0) //RR Condition, Left Rotation
+        {
+            return rotateLeft(node);
+        }
+        if(balance < -1 && getBalance(node.right) > 0) //RL Condition, Right rotation on the right child, then left rotation on disbalanced node
+        {
+            node.right = rotateRight(node.right);
+            return rotateLeft(node);
+        }
+        return node; //return the updated node after balancing
+    }
+
+
+
+    //Calls deleteNode method to delete a value from tree
+    public void delete(int value)
+    {
+        root = deleteNode(root, value);
+    }
+
+
+
+    //Clear Entire Tree - O(1)
+    public void clearAVL()
+    {
+        root = null;
+        System.out.println("AVL Tree has been successfully cleared and deleted!");
+    }    
 }
