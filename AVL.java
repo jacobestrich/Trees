@@ -299,3 +299,27 @@ public class AVL
         System.out.println("AVL Tree has been successfully cleared and deleted!");
     }    
 }
+
+
+/*Notes:
+ * Run Times:
+ * 
+ * AVL Tree:
+ *  -Create AVL:            O(1)
+ *  -Insert a Node:         O(logN)
+ *  -Traverse AVL:          O(N)
+ *  -Search for a Node:     O(logN)
+ *  -Delete a Node:         O(logN)
+ *  -Delete Entire AVL:     O(1)
+ * 
+ * 
+ * Binary Search Tree(BST):
+ *  -Create AVL:            O(1)
+ *  -Insert a Node:         O(N)
+ *  -Traverse Tree:         O(N)
+ *  -Search for a Node:     O(N)
+ *  -Delete a Node:         O(N)
+ *  -Delete Entire Tree:    O(1) 
+ * 
+ */
+
